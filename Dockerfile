@@ -4,8 +4,12 @@ FROM openjdk:21-jdk AS build
 # Define diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia todos os arquivos do projeto para o container
-COPY . .
+# Copia os arquivos necessários para o build
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+# Copia o restante do código da aplicação
+COPY src ./src
 
 # Garante que o mvnw tenha permissão de execução
 RUN chmod +x mvnw
@@ -21,8 +25,8 @@ WORKDIR /app
 # Copia o JAR gerado na etapa de build
 COPY --from=build /app/target/*.jar app.jar
 
-# Expõe a porta padrão do Spring Boot
-EXPOSE 8080
+# Expõe a porta que a aplicação vai rodar (no seu application.properties está como 8081)
+EXPOSE 8081
 
 # Comando para rodar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
