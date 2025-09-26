@@ -1,15 +1,11 @@
 # Etapa 1: Build da aplicação
-FROM openjdk:21-jdk AS build
+FROM eclipse-temurin:21-jdk AS build
 
 # Define diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia os arquivos necessários para o build
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-
-# Copia o restante do código da aplicação
-COPY src ./src
+# Copia todos os arquivos do projeto para o container
+COPY . .
 
 # Garante que o mvnw tenha permissão de execução
 RUN chmod +x mvnw
@@ -18,14 +14,14 @@ RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: Imagem final para rodar a aplicação
-FROM openjdk:21-jdk
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
 # Copia o JAR gerado na etapa de build
 COPY --from=build /app/target/*.jar app.jar
 
-# Expõe a porta que a aplicação vai rodar (no seu application.properties está como 8081)
+# Expõe a porta padrão do Spring Boot
 EXPOSE 8081
 
 # Comando para rodar a aplicação
