@@ -15,7 +15,7 @@ COPY src ./src
 RUN chmod +x mvnw
 
 # Build do projeto sem rodar testes
-RUN mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: Imagem final para rodar a aplicação
 FROM openjdk:21-jdk
